@@ -1,5 +1,10 @@
+import os
 from tkinter import *
+from cfs_manager.manager import Main_FS
+from cfs_manager.help_functions import license, github, documentation
+fs = Main_FS()
 
+image_dir = os.path.join('gui-fork', 'res', 'img')
 
 def upload():
     pass
@@ -30,15 +35,15 @@ def open_about_window():
 
 
 def open_docs():
-    pass
+    documentation(fs, [])
 
 
 def open_github():
-    pass
+    github(fs, [])
 
 
 def open_license():
-    pass
+    license(fs, [])
 
 
 def open_gui_overview():
@@ -50,11 +55,11 @@ def open_send_feedback_window():
 
 
 def get_space_used():
-    return 3.0
+    return fs.cfs_size
 
 
 def get_total_space():
-    return 15.0
+    return fs.file_system_info['total quota']
 
 
 def open_storage_details_window():
@@ -142,8 +147,8 @@ def main():
     my_cloud_label = Label(cfp_top_bar, text='My Cloud')
     my_cloud_label.pack(side=LEFT)
 
-    list_layout_img = PhotoImage(file='res/img/list_layout.png')
-    grid_layout_img = PhotoImage(file='res/img/grid_layout.png')
+    list_layout_img = PhotoImage(file=os.path.join(image_dir, 'list_layout.png'))
+    grid_layout_img = PhotoImage(file=os.path.join(image_dir, 'grid_layout.png'))
 
     list_layout_button = Button(cfp_top_bar, image=list_layout_img, command=switch_to_list_layout, width=20, height=20)
     grid_layout_button = Button(cfp_top_bar, image=grid_layout_img, command=switch_to_grid_layout, width=20, height=20)
@@ -152,7 +157,7 @@ def main():
 
     files_grid_frame = Frame(cloud_files_panel)
     files_grid_frame.pack(fill=BOTH)
-    folder_image = PhotoImage(file='res/img/sample_folder_image.png')
+    folder_image = PhotoImage(file=os.path.join(image_dir, 'sample_folder_image.png'))
 
     sample_file_1 = Label(files_grid_frame, image=folder_image)
     sample_file_2 = Label(files_grid_frame, image=folder_image)
