@@ -4,7 +4,7 @@ from cfs_manager.manager import Main_FS
 from cfs_manager.help_functions import license, github, documentation
 fs = Main_FS()
 
-image_dir = os.path.join('gui-fork', 'res', 'img')
+image_dir = os.path.join('cfs-manager-gui', 'res', 'img')
 
 def upload():
     pass
@@ -55,11 +55,11 @@ def open_send_feedback_window():
 
 
 def get_space_used():
-    return fs.cfs_size
+    return fs.cfs_size/2**30
 
 
 def get_total_space():
-    return fs.file_system_info['total quota']
+    return fs.file_system_info['total quota']/2**30
 
 
 def open_storage_details_window():
