@@ -17,6 +17,11 @@ def upload_all():
     pass
 
 
+#return list of names of folders being watched
+def get_watched_folders():
+    pass
+
+
 def watch(directory_name):
     pass
 
