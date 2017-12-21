@@ -1,10 +1,9 @@
 import os
 from tkinter import *
-from cfs_manager.manager import Main_FS
-from cfs_manager.help_functions import license, github, documentation
-fs = Main_FS()
+import integration
 
-image_dir = os.path.join('cfs-manager-gui', 'res', 'img')
+image_dir = os.path.join('res', 'img')
+
 
 def upload():
     pass
@@ -34,32 +33,12 @@ def open_about_window():
     pass
 
 
-def open_docs():
-    documentation(fs, [])
-
-
-def open_github():
-    github(fs, [])
-
-
-def open_license():
-    license(fs, [])
-
-
 def open_gui_overview():
     pass
 
 
 def open_send_feedback_window():
     pass
-
-
-def get_space_used():
-    return fs.cfs_size/2**30
-
-
-def get_total_space():
-    return fs.file_system_info['total quota']/2**30
 
 
 def open_storage_details_window():
@@ -111,9 +90,9 @@ def main():
     about_submenu = Menu(main_menu)
     main_menu.add_cascade(label='About', menu=about_submenu)
     about_submenu.add_command(label='About...', command=open_about_window)
-    about_submenu.add_command(label='Docs...', command=open_docs)
-    about_submenu.add_command(label='Github...', command=open_github)
-    about_submenu.add_command(label='License...', command=open_license)
+    about_submenu.add_command(label='Docs...', command=integration.open_docs)
+    about_submenu.add_command(label='Github...', command=integration.open_github)
+    about_submenu.add_command(label='License...', command=integration.open_license)
 
     help_submenu = Menu(main_menu)
     main_menu.add_cascade(label='Help', menu=help_submenu)
@@ -126,8 +105,8 @@ def main():
     ssg_height = 17
     storage_space_graphic = Canvas(storage_space_bar, width=ssg_width, height=ssg_height)
     storage_space_graphic.pack(side=LEFT)
-    space_used = get_space_used()
-    total_space = get_total_space()
+    space_used = integration.get_space_used()
+    total_space = integration.get_total_space()
     sur_width = ssg_width * (space_used / total_space)
     print(sur_width)
     border_rectangle = storage_space_graphic.create_rectangle(0, 0, ssg_width, ssg_height, fill='lightgrey')
@@ -136,8 +115,8 @@ def main():
     space_used_text = Label(storage_space_bar, text=str(space_used) + ' GB used out of ' + str(total_space))
     space_used_text.pack(side=LEFT)
 
-    storage_details_button = Button(storage_space_bar, text="Storage Details...", command=open_storage_details_window)
-    storage_details_button.pack(side=LEFT)
+    #storage_details_button = Button(storage_space_bar, text="Storage Details...", command=open_storage_details_window)
+    #storage_details_button.pack(side=LEFT)
 
     #initialize cloud files panel
     cloud_files_panel.pack(side=LEFT, fill=BOTH)
@@ -147,6 +126,7 @@ def main():
     my_cloud_label = Label(cfp_top_bar, text='My Cloud')
     my_cloud_label.pack(side=LEFT)
 
+    """
     list_layout_img = PhotoImage(file=os.path.join(image_dir, 'list_layout.png'))
     grid_layout_img = PhotoImage(file=os.path.join(image_dir, 'grid_layout.png'))
 
@@ -154,11 +134,13 @@ def main():
     grid_layout_button = Button(cfp_top_bar, image=grid_layout_img, command=switch_to_grid_layout, width=20, height=20)
     list_layout_button.pack(side=RIGHT)
     grid_layout_button.pack(side=RIGHT)
+    """
 
     files_grid_frame = Frame(cloud_files_panel)
     files_grid_frame.pack(fill=BOTH)
     folder_image = PhotoImage(file=os.path.join(image_dir, 'sample_folder_image.png'))
 
+    """
     sample_file_1 = Label(files_grid_frame, image=folder_image)
     sample_file_2 = Label(files_grid_frame, image=folder_image)
     sample_file_3 = Label(files_grid_frame, image=folder_image)
@@ -178,6 +160,7 @@ def main():
     sample_file_7.grid(row=2, column=0)
     sample_file_8.grid(row=2, column=1)
     sample_file_9.grid(row=2, column=2)
+    """
 
     #initialize file inspect panel
     file_inspect_panel.pack(side=RIGHT, fill=Y)
