@@ -25,6 +25,11 @@ def remove_from_watched(directory_name):
     pass
 
 
+#gets list of files being managed by cfs_manager
+def get_file_list():
+    pass
+
+
 #returns a dictionary containing various pieces of info about the file
 #(or if it's easier to implement, a list of strings)
 def get_file_info(filename):
