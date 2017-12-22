@@ -50,7 +50,10 @@ def remove_from_watched(directory_name):
 
 #gets list of files being managed by cfs_manager
 def get_file_list():
-    return fs.files
+    names = []
+    for file in fs.files:
+        names.append(file['filename'])
+    return names
 
 
 #returns a dictionary containing various pieces of info about the file
