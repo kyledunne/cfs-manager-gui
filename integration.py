@@ -1,65 +1,70 @@
 #I am still getting an error within manager.py while calling the below line
+from cfs_manager.cli import download_directory
 from cfs_manager.manager import Main_FS
+from cfs_manager.file_systems import dirs
 from cfs_manager.help_functions import license, github, documentation
+from cfs_manager import manager
 
 fs = Main_FS()
 
 
 def download(filename, destination):
-    return True
+    return fs.download_file(filename, destination)
 
 
 def get_default_download_destination():
-    return 'C:\\Users\\AlisonRocks\\Downloads'
+    return download_directory
 
 
 def delete(filename):
-    pass
+    fs.remove_file(filename)
 
 
 #returns a list containing the names of the files that were uploaded
 def upload_from(directory_name):
+    fs.upload_archives(directory_name)
+    # TODO needs to return a list of the names of the files that were uploaded
     return ['uploadedFile1.txt', 'uploadedFile2.txt', 'uploadedZip666comma666comma666.zip']
 
 
 def upload_all():
+    fs.upload_all()
+    # TODO needs to return a list of the names of files that were uploaded
     return ['ALL', 'WILL BE', 'UPLOADED']
 
 
 #return list of names of folders being watched
 def get_watched_folders():
-    return ['OWLS', 'NEWTS', 'SALAMANDERS', 'C:\\Users\\Whaaaaaaat????????', 'a', 'b', 'c', 'd', 'e', '1', '2', '3']
+    return dirs
 
 
 def watch(directory_name):
+    # TODO
     return True
 
 
 def remove_from_watched(directory_name):
+    # TODO
     return True
 
 
 #gets list of files being managed by cfs_manager
 def get_file_list():
-    return ['file1.txt', 'file2.txt', 'file3.txt', 'file4.txt', 'file5.txt', 'file6.txt', 'file7.txt', 'file8.txt'
-            , 'file12.txt', 'file22.txt', 'file32.txt', 'file42.txt', 'file52.txt', 'file62.txt', 'file72.txt'
-            , 'file82.txt', 'file122.txt', 'file222.txt', 'file332.txt', 'file442.txt', 'file552.txt', 'file662.txt'
-            , 'file772.txt', 'file882.png', 'file2.zip', 'file3.zip', 'file4.zip', 'file5.zip', 'file6.zip', 'file7.zip'
-            , 'file8.zip', 'file666commma666comma666.zip']
+    return fs.files
 
 
 #returns a dictionary containing various pieces of info about the file
 #(or if it's easier to implement, a list of strings)
 def get_file_info(filename):
-    return {'filename': filename, 'size': '666', 'system type': 'Google Drive', 'date': '6/6/66 6:06'}
+    return fs.inspect_file(filename)
 
 
 def refresh_cloud():
-    return True
+    fs.refresh_files()
 
 
 def clear_cloud():
-    return True
+    fs.remove_all()
 
 
 def open_docs():
