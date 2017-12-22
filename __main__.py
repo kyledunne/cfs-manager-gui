@@ -1,20 +1,12 @@
 import os
 from tkinter import *
-from tkinter import filedialog
+from tkinter import filedialog, messagebox
 import integration_placeholder
 
 image_dir = os.path.join('res', 'img')
 watched_folders = integration_placeholder.get_watched_folders()
 managed_files = integration_placeholder.get_file_list()
 default_download_destination = integration_placeholder.get_default_download_destination()
-
-
-def upload():
-    pass
-
-
-def upload_all():
-    pass
 
 
 def open_manage_watched_folders_window():
@@ -24,9 +16,9 @@ def open_manage_watched_folders_window():
 class ManageWatchedFoldersWindow:
 
     def __init__(self):
-        window = Toplevel()
-        window.title('Manage Watched Folders')
-        self.listbox_frame = Frame(window)
+        self.window = Toplevel()
+        self.window.title('Manage Watched Folders')
+        self.listbox_frame = Frame(self.window)
         self.listbox_frame.pack(side=LEFT, fill=Y)
         self.current_inspected_folder = None
         self.scrollbar = Scrollbar(self.listbox_frame)
@@ -41,7 +33,7 @@ class ManageWatchedFoldersWindow:
         self.folders_listbox.config(width=min(50, width+3))
         self.folders_listbox.bind('<ButtonRelease-1>', self.find_and_inspect_folder)
 
-        self.right_side_frame = Frame(window)
+        self.right_side_frame = Frame(self.window)
         self.right_side_frame.pack(side=RIGHT, fill=Y)
         self.add_button = Button(self.right_side_frame, text='Add...', command=self.add)
         self.add_button.pack(side=TOP)
@@ -51,6 +43,8 @@ class ManageWatchedFoldersWindow:
         self.inspected_folder_name_label = Label(self.right_side_frame, text='')
         self.inspected_folder_name_label.pack(side=BOTTOM)
         Label(self.right_side_frame, text='--------------------').pack(side=BOTTOM)
+        self.window.grab_set()
+        self.window.focus_set()
 
     def find_and_inspect_folder(self, event_data):
         self.current_inspected_folder = self.folders_listbox.get(self.folders_listbox.curselection()[0])
@@ -71,14 +65,6 @@ class ManageWatchedFoldersWindow:
         self.folders_listbox.delete(folders_listbox_index)
         self.inspected_folder_name_label.config(text='')
         self.remove_button.config(state=DISABLED)
-
-
-def refresh():
-    pass
-
-
-def clear_cloud():
-    pass
 
 
 def open_about_window():
@@ -103,27 +89,27 @@ class MainWindow:
         self.current_inspected_file = None
         self.manage_watched_folders_window = None
 
-        root = Tk()
-        root.title('CFS Manager v' + integration_placeholder.get_version_number())
-        root.option_add('*tearOff', False)  # removes dashed line from top of all cascading menus
-        main_menu = Menu(root)
-        root.config(menu=main_menu)
+        self.root = Tk()
+        self.root.title('CFS Manager v' + integration_placeholder.get_version_number())
+        self.root.option_add('*tearOff', False)  # removes dashed line from top of all cascading menus
+        main_menu = Menu(self.root)
+        self.root.config(menu=main_menu)
 
-        cloud_files_panel = Frame(root, width=400)
-        file_inspect_panel = Frame(root)
-        storage_space_bar = Frame(root, height=100)
+        cloud_files_panel = Frame(self.root, width=400)
+        file_inspect_panel = Frame(self.root)
+        self.storage_space_bar = Frame(self.root, height=100)
 
         # initialize main_menu elements
         local_submenu = Menu(main_menu)
         main_menu.add_cascade(label='Local', menu=local_submenu)
-        local_submenu.add_command(label='Upload...', command=upload)
-        local_submenu.add_command(label='Upload All', command=upload_all)
+        local_submenu.add_command(label='Upload...', command=self.upload)
+        local_submenu.add_command(label='Upload All', command=self.upload_all)
         local_submenu.add_command(label='Manage Watched Folders...', command=open_manage_watched_folders_window)
 
         cloud_submenu = Menu(main_menu)
         main_menu.add_cascade(label='Cloud', menu=cloud_submenu)
-        cloud_submenu.add_command(label='Refresh', command=refresh)
-        cloud_submenu.add_command(label='Clear', command=clear_cloud)
+        cloud_submenu.add_command(label='Refresh', command=self.refresh)
+        cloud_submenu.add_command(label='Clear', command=self.clear_cloud)
 
         about_submenu = Menu(main_menu)
         main_menu.add_cascade(label='About', menu=about_submenu)
@@ -137,21 +123,23 @@ class MainWindow:
         help_submenu.add_command(label='Send Question/Request to the Developers...', command=open_send_feedback_window)
 
         # initialize storage space bar
-        storage_space_bar.pack(side=BOTTOM, anchor=SW, fill=X)
+        self.storage_space_bar.pack(side=BOTTOM, anchor=SW, fill=X)
 
-        ssg_width = 80
-        ssg_height = 17
-        storage_space_graphic = Canvas(storage_space_bar, width=ssg_width, height=ssg_height)
-        storage_space_graphic.pack(side=LEFT)
+        self.ssg_width = 80
+        self.ssg_height = 17
+        self.storage_space_graphic = Canvas(self.storage_space_bar, width=self.ssg_width, height=self.ssg_height)
+        self.storage_space_graphic.pack(side=LEFT)
         space_used = integration_placeholder.get_space_used()
         total_space = integration_placeholder.get_total_space()
-        sur_width = ssg_width * (space_used / total_space)
-        print(sur_width)
-        storage_space_graphic.create_rectangle(0, 0, ssg_width, ssg_height, fill='lightgrey')
-        storage_space_graphic.create_rectangle(0, 0, sur_width, ssg_height, fill='green', outline='')
+        self.sur_width = self.ssg_width * (space_used / total_space)
+        self.storage_space_graphic.create_rectangle(0, 0, self.ssg_width, self.ssg_height, fill='lightgrey')
+        self.storage_space_graphic.create_rectangle(0, 0, self.sur_width, self.ssg_height, fill='green', outline='')
 
-        space_used_text = Label(storage_space_bar, text=str(space_used) + ' GB used out of ' + str(total_space))
+        space_used_text = Label(self.storage_space_bar, text=str(space_used) + ' GB used out of ' + str(total_space) + ' |')
         space_used_text.pack(side=LEFT)
+
+        self.status_label = Label(self.storage_space_bar, text='')
+        self.status_label.pack(side=RIGHT)
 
         # initialize cloud files panel
         cloud_files_panel.pack(side=LEFT, fill=BOTH)
@@ -215,11 +203,12 @@ class MainWindow:
         self.delete_button.config(state=DISABLED)
         self.delete_button.pack(side=TOP)
 
-        root.mainloop()
+        self.root.mainloop()
 
     def find_and_inspect_file(self, event_data):
         self.current_inspected_file = self.file_listbox.get(self.file_listbox.curselection()[0])
         self.set_file_inspect_panel()
+        self.status_label.config(text='')
 
     def choose_download_destination(self):
         replacement_filepath = filedialog.askdirectory()
@@ -232,7 +221,7 @@ class MainWindow:
         viable = self.check_filepath_viability(filepath)
         if viable:
             integration_placeholder.download(self.current_inspected_file, filepath)
-            print('downloaded')
+            self.status_label.config(text=self.current_inspected_file + ' downloaded')
         else:
             print('invalid filepath error')
             exit()
@@ -241,10 +230,10 @@ class MainWindow:
         integration_placeholder.delete(self.current_inspected_file)
         index_in_file_listbox = managed_files.index(self.current_inspected_file)
         managed_files.remove(self.current_inspected_file)
+        self.status_label.config(text=self.current_inspected_file + ' deleted')
         self.file_listbox.delete(index_in_file_listbox)
         self.current_inspected_file = None
         self.set_file_inspect_panel()
-        print('deleted')
 
     def set_file_inspect_panel(self):
         file = self.current_inspected_file
@@ -278,6 +267,32 @@ class MainWindow:
 
     def check_filepath_viability(self, filepath):
         return True
+
+    def upload(self):
+        directory_to_upload_from = filedialog.askdirectory()
+        if directory_to_upload_from:
+            files = integration_placeholder.upload_from(directory_to_upload_from)
+            message_string = ''
+            for file in files:
+                managed_files.append(file)
+                self.file_listbox.insert(END, file)
+                message_string += file + '\n'
+            messagebox.showinfo(str(len(files)) + ' Files Uploaded', message_string)
+
+    def upload_all(self):
+        files = integration_placeholder.upload_all()
+        message_string = ''
+        for file in files:
+            managed_files.append(file)
+            self.file_listbox.insert(END, file)
+            message_string += file + '\n'
+        messagebox.showinfo(str(len(files)) + ' Files Uploaded', message_string)
+
+    def refresh(self):
+        pass
+
+    def clear_cloud(self):
+        pass
 
 
 if __name__ == '__main__':
