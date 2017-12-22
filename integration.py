@@ -19,7 +19,7 @@ def delete(filename):
 
 #returns a list containing the names of the files that were uploaded
 def upload_from(directory_name):
-    return ['uploaded' + directory_name + 'File1.txt', 'uploadedFile2.txt', 'uploadedZip666comma666comma666.zip']
+    return ['uploadedFile1.txt', 'uploadedFile2.txt', 'uploadedZip666comma666comma666.zip']
 
 
 def upload_all():
