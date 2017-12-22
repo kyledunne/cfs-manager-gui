@@ -1,12 +1,12 @@
 import os
 from tkinter import *
 from tkinter import filedialog, messagebox
-import integration_placeholder
+import integration
 
 image_dir = os.path.join('res', 'img')
-watched_folders = integration_placeholder.get_watched_folders()
-managed_files = integration_placeholder.get_file_list()
-default_download_destination = integration_placeholder.get_default_download_destination()
+watched_folders = integration.get_watched_folders()
+managed_files = integration.get_file_list()
+default_download_destination = integration.get_default_download_destination()
 
 
 def open_manage_watched_folders_window():
@@ -54,12 +54,12 @@ class ManageWatchedFoldersWindow:
     def add(self):
         folder_to_add = filedialog.askdirectory()
         if folder_to_add:
-            integration_placeholder.watch(folder_to_add)
+            integration.watch(folder_to_add)
             watched_folders.append(folder_to_add)
             self.folders_listbox.insert(END, folder_to_add)
 
     def remove(self):
-        integration_placeholder.remove_from_watched(self.current_inspected_folder)
+        integration.remove_from_watched(self.current_inspected_folder)
         folders_listbox_index = watched_folders.index(self.current_inspected_folder)
         watched_folders.remove(self.current_inspected_folder)
         self.folders_listbox.delete(folders_listbox_index)
@@ -90,7 +90,7 @@ class MainWindow:
         self.manage_watched_folders_window = None
 
         self.root = Tk()
-        self.root.title('CFS Manager v' + integration_placeholder.get_version_number())
+        self.root.title('CFS Manager v' + integration.get_version_number())
         self.root.option_add('*tearOff', False)  # removes dashed line from top of all cascading menus
         main_menu = Menu(self.root)
         self.root.config(menu=main_menu)
@@ -113,14 +113,13 @@ class MainWindow:
 
         about_submenu = Menu(main_menu)
         main_menu.add_cascade(label='About', menu=about_submenu)
-        about_submenu.add_command(label='About...', command=open_about_window)
-        about_submenu.add_command(label='Docs...', command=integration_placeholder.open_docs)
-        about_submenu.add_command(label='Github...', command=integration_placeholder.open_github)
-        about_submenu.add_command(label='License...', command=integration_placeholder.open_license)
+        about_submenu.add_command(label='About...', command=integration.open_docs)
+        about_submenu.add_command(label='Github...', command=integration.open_github)
+        about_submenu.add_command(label='License...', command=integration.open_license)
 
-        help_submenu = Menu(main_menu)
-        main_menu.add_cascade(label='Help', menu=help_submenu)
-        help_submenu.add_command(label='Send Question/Request to the Developers...', command=open_send_feedback_window)
+#       help_submenu = Menu(main_menu)
+#       main_menu.add_cascade(label='Help', menu=help_submenu)
+#       help_submenu.add_command(label='Send Question/Request to the Developers...', command=open_send_feedback_window)
 
         # initialize storage space bar
         self.storage_space_bar.pack(side=BOTTOM, anchor=SW, fill=X)
@@ -129,13 +128,14 @@ class MainWindow:
         self.ssg_height = 17
         self.storage_space_graphic = Canvas(self.storage_space_bar, width=self.ssg_width, height=self.ssg_height)
         self.storage_space_graphic.pack(side=LEFT)
-        space_used = integration_placeholder.get_space_used()
-        total_space = integration_placeholder.get_total_space()
+        space_used = integration.get_space_used()
+        total_space = integration.get_total_space()
         self.sur_width = self.ssg_width * (space_used / total_space)
         self.storage_space_graphic.create_rectangle(0, 0, self.ssg_width, self.ssg_height, fill='lightgrey')
         self.storage_space_graphic.create_rectangle(0, 0, self.sur_width, self.ssg_height, fill='green', outline='')
 
-        space_used_text = Label(self.storage_space_bar, text=str(space_used) + ' GB used out of ' + str(total_space) + ' |')
+        space_used_text = Label(self.storage_space_bar, text=str('%.2f' % space_used) + ' GB used out of '
+                                + str('%.2f' % total_space) + ' |')
         space_used_text.pack(side=LEFT)
 
         self.status_label = Label(self.storage_space_bar, text='')
@@ -220,14 +220,14 @@ class MainWindow:
         filepath = self.download_destination_entry.get()
         viable = self.check_filepath_viability(filepath)
         if viable:
-            integration_placeholder.download(self.current_inspected_file, filepath)
+            integration.download(self.current_inspected_file, filepath)
             self.status_label.config(text=self.current_inspected_file + ' downloaded')
         else:
             print('invalid filepath error')
             exit()
 
     def delete(self):
-        integration_placeholder.delete(self.current_inspected_file)
+        integration.delete(self.current_inspected_file)
         index_in_file_listbox = managed_files.index(self.current_inspected_file)
         managed_files.remove(self.current_inspected_file)
         self.status_label.config(text=self.current_inspected_file + ' deleted')
@@ -249,15 +249,17 @@ class MainWindow:
             self.download_destination_entry.config(state=DISABLED)
         else:
             file_ext = file[-4:-1] + file[-1]
-            if file_ext == '.zip':
+            if '.' not in file:
                 self.file_inspect_image_label.config(image=self.folder_100x100_image)
-            elif file_ext in ['.jpg', 'jpeg', '.png', '.gif']:
+            elif file_ext in ['.jpg', '.png', '.gif']:
                 self.file_inspect_image_label.config(image=self.image_100x100_image)
             else:
                 self.file_inspect_image_label.config(image=self.document_100x100_image)
-            file_info = integration_placeholder.get_file_info(file)
-            self.file_name_label.config(text='Name: ' + file_info['filename'])
-            self.file_size_label.config(text='Size: ' + file_info['size'] + ' bytes')
+            file_info = integration.get_file_info(file)
+            file_name = file_info['filename']
+            file_name = file_name[0:len(file_name)-4]
+            self.file_name_label.config(text='Name: ' + file_name)
+            self.file_size_label.config(text='Size: ' + str(file_info['size']) + ' bytes')
             self.date_uploaded_label.config(text='Uploaded: ' + file_info['date'])
             self.storage_provider_label.config(text='Storage provider: ' + file_info['system type'])
             self.choose_download_destination_button.config(state=NORMAL)
@@ -271,7 +273,7 @@ class MainWindow:
     def upload(self):
         directory_to_upload_from = filedialog.askdirectory()
         if directory_to_upload_from:
-            files = integration_placeholder.upload_from(directory_to_upload_from)
+            files = integration.upload_from(directory_to_upload_from)
             message_string = ''
             for file in files:
                 managed_files.append(file)
@@ -280,7 +282,7 @@ class MainWindow:
             messagebox.showinfo(str(len(files)) + ' Files Uploaded', message_string)
 
     def upload_all(self):
-        files = integration_placeholder.upload_all()
+        files = integration.upload_all()
         message_string = ''
         for file in files:
             managed_files.append(file)
@@ -289,10 +291,22 @@ class MainWindow:
         messagebox.showinfo(str(len(files)) + ' Files Uploaded', message_string)
 
     def refresh(self):
-        pass
+        integration.refresh_cloud()
+        self.status_label.config(text='File system refreshed')
 
     def clear_cloud(self):
-        pass
+        confirmation = messagebox.askyesno('Clear Cloud', 'This will delete all files in CFSManager\'s cloud.'
+                                           + '\nAre you SURE you want to do this?')
+        if confirmation:
+            integration.clear_cloud()
+            self.status_label.config(text='File system cleared')
+            managed_files.clear()
+            self.file_listbox.delete(0, END)
+            self.current_inspected_file = None
+            self.set_file_inspect_panel()
+            self.root.focus_set()
+        else:
+            self.status_label.config(text='Operation cancelled')
 
 
 if __name__ == '__main__':
