@@ -52,14 +52,15 @@ def remove_from_watched(directory_name):
 def get_file_list():
     names = []
     for file in fs.files:
-        names.append(file['filename'])
+        name_to_add = file['filename']
+        names.append(name_to_add[0:len(name_to_add)-4])
     return names
 
 
 #returns a dictionary containing various pieces of info about the file
 #(or if it's easier to implement, a list of strings)
 def get_file_info(filename):
-    return fs.inspect_file(filename)
+    return fs.inspect_file(filename, return_dict=True)
 
 
 def refresh_cloud():
