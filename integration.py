@@ -9,6 +9,15 @@ def download(filename, destination):
     pass
 
 
+def get_default_download_destination():
+    pass
+
+
+def delete(filename):
+    pass
+
+
+#returns a list containing the names of the files that were uploaded
 def upload_from(directory_name):
     pass
 
@@ -67,3 +76,7 @@ def get_total_space():
 
 def get_space_used():
     return fs.cfs_size/2**30
+
+
+def get_version_number():
+    return '1.3.0'
