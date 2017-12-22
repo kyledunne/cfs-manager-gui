@@ -19,11 +19,11 @@ def delete(filename):
 
 #returns a list containing the names of the files that were uploaded
 def upload_from(directory_name):
-    return ['uploaded' + directory_name + 'File1.txt', 'uploadedFile2.txt', 'uploadedZip666comma666comma666.zip']
+    return ['uploadedFile1.txt', 'uploadedFile2.txt', 'uploadedZip666comma666comma666.zip']
 
 
 def upload_all():
-    return True
+    return ['ALL', 'WILL BE', 'UPLOADED']
 
 
 #return list of names of folders being watched
@@ -42,9 +42,10 @@ def remove_from_watched(directory_name):
 #gets list of files being managed by cfs_manager
 def get_file_list():
     return ['file1.txt', 'file2.txt', 'file3.txt', 'file4.txt', 'file5.txt', 'file6.txt', 'file7.txt', 'file8.txt'
-            , 'file12.txt', 'file22.txt', 'file32.txt', 'file42.txt', 'file52.txt', 'file62.txt', 'file72.txt', 'file82.txt'
-            , 'file122.txt', 'file222.txt', 'file332.txt', 'file442.txt', 'file552.txt', 'file662.txt', 'file772.txt', 'file882.png'
-            , 'file2.zip', 'file3.zip', 'file4.zip', 'file5.zip', 'file6.zip', 'file7.zip', 'file8.zip', 'file666commma666comma666.zip']
+            , 'file12.txt', 'file22.txt', 'file32.txt', 'file42.txt', 'file52.txt', 'file62.txt', 'file72.txt'
+            , 'file82.txt', 'file122.txt', 'file222.txt', 'file332.txt', 'file442.txt', 'file552.txt', 'file662.txt'
+            , 'file772.txt', 'file882.png', 'file2.zip', 'file3.zip', 'file4.zip', 'file5.zip', 'file6.zip', 'file7.zip'
+            , 'file8.zip', 'file666commma666comma666.zip']
 
 
 #returns a dictionary containing various pieces of info about the file
