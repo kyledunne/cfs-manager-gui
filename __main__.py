@@ -1,12 +1,12 @@
 import os
 from tkinter import *
 from tkinter import filedialog
-import integration
+import integration_placeholder
 
 image_dir = os.path.join('res', 'img')
-watched_folders = integration.get_watched_folders()
-managed_files = integration.get_file_list()
-default_download_destination = integration.get_default_download_destination()
+watched_folders = integration_placeholder.get_watched_folders()
+managed_files = integration_placeholder.get_file_list()
+default_download_destination = integration_placeholder.get_default_download_destination()
 
 
 def upload():
@@ -60,12 +60,12 @@ class ManageWatchedFoldersWindow:
     def add(self):
         folder_to_add = filedialog.askdirectory()
         if folder_to_add:
-            integration.watch(folder_to_add)
+            integration_placeholder.watch(folder_to_add)
             watched_folders.append(folder_to_add)
             self.folders_listbox.insert(END, folder_to_add)
 
     def remove(self):
-        integration.remove_from_watched(self.current_inspected_folder)
+        integration_placeholder.remove_from_watched(self.current_inspected_folder)
         folders_listbox_index = watched_folders.index(self.current_inspected_folder)
         watched_folders.remove(self.current_inspected_folder)
         self.folders_listbox.delete(folders_listbox_index)
@@ -104,7 +104,7 @@ class MainWindow:
         self.manage_watched_folders_window = None
 
         root = Tk()
-        root.title('CFS Manager v' + integration.get_version_number())
+        root.title('CFS Manager v' + integration_placeholder.get_version_number())
         root.option_add('*tearOff', False)  # removes dashed line from top of all cascading menus
         main_menu = Menu(root)
         root.config(menu=main_menu)
@@ -128,9 +128,9 @@ class MainWindow:
         about_submenu = Menu(main_menu)
         main_menu.add_cascade(label='About', menu=about_submenu)
         about_submenu.add_command(label='About...', command=open_about_window)
-        about_submenu.add_command(label='Docs...', command=integration.open_docs)
-        about_submenu.add_command(label='Github...', command=integration.open_github)
-        about_submenu.add_command(label='License...', command=integration.open_license)
+        about_submenu.add_command(label='Docs...', command=integration_placeholder.open_docs)
+        about_submenu.add_command(label='Github...', command=integration_placeholder.open_github)
+        about_submenu.add_command(label='License...', command=integration_placeholder.open_license)
 
         help_submenu = Menu(main_menu)
         main_menu.add_cascade(label='Help', menu=help_submenu)
@@ -143,8 +143,8 @@ class MainWindow:
         ssg_height = 17
         storage_space_graphic = Canvas(storage_space_bar, width=ssg_width, height=ssg_height)
         storage_space_graphic.pack(side=LEFT)
-        space_used = integration.get_space_used()
-        total_space = integration.get_total_space()
+        space_used = integration_placeholder.get_space_used()
+        total_space = integration_placeholder.get_total_space()
         sur_width = ssg_width * (space_used / total_space)
         print(sur_width)
         storage_space_graphic.create_rectangle(0, 0, ssg_width, ssg_height, fill='lightgrey')
@@ -231,14 +231,14 @@ class MainWindow:
         filepath = self.download_destination_entry.get()
         viable = self.check_filepath_viability(filepath)
         if viable:
-            integration.download(self.current_inspected_file, filepath)
+            integration_placeholder.download(self.current_inspected_file, filepath)
             print('downloaded')
         else:
             print('invalid filepath error')
             exit()
 
     def delete(self):
-        integration.delete(self.current_inspected_file)
+        integration_placeholder.delete(self.current_inspected_file)
         index_in_file_listbox = managed_files.index(self.current_inspected_file)
         managed_files.remove(self.current_inspected_file)
         self.file_listbox.delete(index_in_file_listbox)
@@ -266,7 +266,7 @@ class MainWindow:
                 self.file_inspect_image_label.config(image=self.image_100x100_image)
             else:
                 self.file_inspect_image_label.config(image=self.document_100x100_image)
-            file_info = integration.get_file_info(file)
+            file_info = integration_placeholder.get_file_info(file)
             self.file_name_label.config(text='Name: ' + file_info['filename'])
             self.file_size_label.config(text='Size: ' + file_info['size'] + ' bytes')
             self.date_uploaded_label.config(text='Uploaded: ' + file_info['date'])
