@@ -3,7 +3,8 @@ from cfs_manager.cli import download_directory
 from cfs_manager.manager import Main_FS
 from cfs_manager.file_systems import dirs
 from cfs_manager.help_functions import license, github, documentation
-from cfs_manager import manager
+from cfs_manager.cfs_watcher import main
+import __main__
 
 fs = Main_FS()
 
@@ -23,14 +24,26 @@ def delete(filename):
 #returns a list containing the names of the files that were uploaded
 def upload_from(directory_name):
     fs.upload_archives(directory_name)
-    # TODO needs to return a list of the names of the files that were uploaded
-    return ['uploadedFile1.txt', 'uploadedFile2.txt', 'uploadedZip666comma666comma666.zip']
+    new_files_list = get_file_list()
+    len_difference = len(new_files_list) - len(__main__.managed_files)
+    if len_difference == 0:
+        return []
+    elif len_difference == 1:
+        return [new_files_list[-1]]
+    else:
+        return new_files_list[-len_difference:-1] + [new_files_list[-1]]
 
 
 def upload_all():
     fs.upload_all()
-    # TODO needs to return a list of the names of files that were uploaded
-    return ['ALL', 'WILL BE', 'UPLOADED']
+    new_files_list = get_file_list()
+    len_difference = len(new_files_list) - len(__main__.managed_files)
+    if len_difference == 0:
+        return []
+    elif len_difference == 1:
+        return [new_files_list[-1]]
+    else:
+        return new_files_list[-len_difference:-1] + [new_files_list[-1]]
 
 
 #return list of names of folders being watched
@@ -39,13 +52,13 @@ def get_watched_folders():
 
 
 def watch(directory_name):
-    # TODO
-    return True
+    main(directory_name)
+    dirs.append(directory_name)
 
 
 def remove_from_watched(directory_name):
     # TODO
-    return True
+    pass
 
 
 #gets list of files being managed by cfs_manager
