@@ -9,6 +9,12 @@ managed_files = integration.get_file_list()
 default_download_destination = integration.get_default_download_destination()
 
 
+def refresh_globals():
+    managed_files.clear()
+    for file in integration.get_file_list():
+        managed_files.append(file)
+
+
 def open_manage_watched_folders_window():
     ManageWatchedFoldersWindow()
 
@@ -49,7 +55,7 @@ class ManageWatchedFoldersWindow:
     def find_and_inspect_folder(self, event_data):
         self.current_inspected_folder = self.folders_listbox.get(self.folders_listbox.curselection()[0])
         self.inspected_folder_name_label.config(text=self.current_inspected_folder)
-        self.remove_button.config(state=NORMAL)
+        # self.remove_button.config(state=NORMAL)
 
     def add(self):
         folder_to_add = filedialog.askdirectory()
@@ -280,6 +286,9 @@ class MainWindow:
                 self.file_listbox.insert(END, file)
                 message_string += file + '\n'
             messagebox.showinfo(str(len(files)) + ' Files Uploaded', message_string)
+            self.status_label.config(text='')
+        else:
+            self.status_label.config(text='')
 
     def upload_all(self):
         files = integration.upload_all()
@@ -289,22 +298,29 @@ class MainWindow:
             self.file_listbox.insert(END, file)
             message_string += file + '\n'
         messagebox.showinfo(str(len(files)) + ' Files Uploaded', message_string)
+        self.status_label.config(text='')
 
     def refresh(self):
         integration.refresh_cloud()
+        refresh_globals()
+        self.file_listbox.delete(0, END)
+        for file in managed_files:
+            self.file_listbox.insert(END, file)
+        self.current_inspected_file = None
+        self.set_file_inspect_panel()
         self.status_label.config(text='File system refreshed')
 
     def clear_cloud(self):
         confirmation = messagebox.askyesno('Clear Cloud', 'This will delete all files in CFSManager\'s cloud.'
                                            + '\nAre you SURE you want to do this?')
         if confirmation:
+            self.status_label.config(text='Clearing file system...')
             integration.clear_cloud()
             self.status_label.config(text='File system cleared')
             managed_files.clear()
             self.file_listbox.delete(0, END)
             self.current_inspected_file = None
             self.set_file_inspect_panel()
-            self.root.focus_set()
         else:
             self.status_label.config(text='Operation cancelled')
 
