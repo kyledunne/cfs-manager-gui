@@ -29,9 +29,11 @@ def upload_from(directory_name):
     if len_difference == 0:
         return []
     elif len_difference == 1:
-        return [new_files_list[-1]]
+        return [new_files_list[0]]
     else:
-        return new_files_list[-len_difference:-1] + [new_files_list[-1]]
+        new_list = new_files_list[0:len_difference]
+        new_list.reverse()
+        return new_list
 
 
 def upload_all():
@@ -41,9 +43,11 @@ def upload_all():
     if len_difference == 0:
         return []
     elif len_difference == 1:
-        return [new_files_list[-1]]
+        return [new_files_list[0]]
     else:
-        return new_files_list[-len_difference:-1] + [new_files_list[-1]]
+        new_list = new_files_list[0:len_difference]
+        new_list.reverse()
+        return new_list
 
 
 #return list of names of folders being watched
