@@ -1,9 +1,8 @@
 import os
 from tkinter import *
 from tkinter import filedialog, messagebox
+image_dir = os.path.join(os.getcwd(), 'res', 'img')
 import integration
-
-image_dir = os.path.join('res', 'img')
 watched_folders = integration.get_watched_folders()
 managed_files = integration.get_file_list()
 default_download_destination = integration.get_default_download_destination()
