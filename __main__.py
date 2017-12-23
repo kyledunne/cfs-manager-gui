@@ -281,8 +281,8 @@ class MainWindow:
             files = integration.upload_from(directory_to_upload_from)
             message_string = ''
             for file in files:
-                managed_files.append(file)
-                self.file_listbox.insert(END, file)
+                managed_files.insert(0, file)
+                self.file_listbox.insert(0, file)
                 message_string += file + '\n'
             messagebox.showinfo(str(len(files)) + ' Files Uploaded', message_string)
             self.status_label.config(text='')
@@ -293,8 +293,8 @@ class MainWindow:
         files = integration.upload_all()
         message_string = ''
         for file in files:
-            managed_files.append(file)
-            self.file_listbox.insert(END, file)
+            managed_files.insert(0, file)
+            self.file_listbox.insert(0, file)
             message_string += file + '\n'
         messagebox.showinfo(str(len(files)) + ' Files Uploaded', message_string)
         self.status_label.config(text='')
