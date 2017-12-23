@@ -7,13 +7,6 @@ watched_folders = integration.get_watched_folders()
 managed_files = integration.get_file_list()
 default_download_destination = integration.get_default_download_destination()
 
-
-def refresh_globals():
-    managed_files.clear()
-    for file in integration.get_file_list():
-        managed_files.append(file)
-
-
 def open_manage_watched_folders_window():
     ManageWatchedFoldersWindow()
 
@@ -91,6 +84,13 @@ def main():
 class MainWindow:
 
     def __init__(self):
+        #initialize constants
+        self.file_listbox_max_width = 50
+        self.file_inspect_panel_width = 33
+
+
+
+        #initialize window
         self.current_inspected_file = None
         self.manage_watched_folders_window = None
 
@@ -164,7 +164,7 @@ class MainWindow:
         for file in managed_files:
             width = max(width, len(file))
             self.file_listbox.insert(END, file)
-        self.file_listbox.config(width=min(50, width + 3))
+        self.file_listbox.config(width=min(self.file_listbox_max_width, width + 3))
 
         self.file_listbox.bind('<ButtonRelease-1>', self.find_and_inspect_file)
 
@@ -186,14 +186,14 @@ class MainWindow:
         self.file_size_label.pack(side=TOP)
         self.date_uploaded_label.pack(side=TOP)
         self.storage_provider_label.pack(side=TOP)
-        Label(file_inspect_panel, text='- - - - - - - - - - - - - - - - - - - - - - - -').pack(side=TOP)
+        Label(file_inspect_panel, text='- - - - - - - - - - - - - - - - - - - - - - - - -').pack(side=TOP)
         self.choose_download_folder_label = Label(file_inspect_panel, text='Choose destination:')
         self.choose_download_folder_label.pack(side=TOP)
         download_destination_frame = Frame(file_inspect_panel)
         download_destination_frame.pack(side=TOP)
         self.download_destination_entry = Entry(download_destination_frame)
         self.download_destination_entry.insert(0, default_download_destination)
-        self.download_destination_entry.config(width=len(default_download_destination))
+        self.download_destination_entry.config(width=self.file_inspect_panel_width-5)
         self.download_destination_entry.config(state=DISABLED)
         self.download_destination_entry.pack(side=LEFT, fill=X)
         self.choose_download_destination_button = Button(download_destination_frame, text='...',
@@ -203,7 +203,7 @@ class MainWindow:
         self.download_button = Button(file_inspect_panel, text='Download', command=self.download)
         self.download_button.config(state=DISABLED)
         self.download_button.pack(side=TOP)
-        Label(file_inspect_panel, text='- - - - - - - - - - - - - - - - - - - - - - - -').pack(side=TOP)
+        Label(file_inspect_panel, text='- - - - - - - - - - - - - - - - - - - - - - - - -').pack(side=TOP)
         self.delete_button = Button(file_inspect_panel, text='Delete', command=self.delete)
         self.delete_button.config(state=DISABLED)
         self.delete_button.pack(side=TOP)
@@ -301,7 +301,9 @@ class MainWindow:
 
     def refresh(self):
         integration.refresh_cloud()
-        refresh_globals()
+        managed_files.clear()
+        for file in integration.get_file_list():
+            managed_files.append(file)
         self.file_listbox.delete(0, END)
         for file in managed_files:
             self.file_listbox.insert(END, file)
